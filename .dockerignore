@@ -1,0 +1,9 @@
+/dist
+/node_modules
+/volumes
+/.git
+/.idea
+.env
+.env.sample
+README.MD
+LICENSE

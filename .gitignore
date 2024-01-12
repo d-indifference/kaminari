@@ -36,5 +36,3 @@ lerna-debug.log*
 
 .env
 /volumes
-/prisma/migrations
-/prisma/migrations/*

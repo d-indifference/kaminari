@@ -18,6 +18,10 @@
         "noFallthroughCasesInSwitch": false,
         "moduleResolution": "node",
         "baseUrl": "./src",
-        "paths": {}
+        "paths": {
+            "@admin/*": ["admin/*"],
+            "@config/*": ["config/*"],
+            "@toolkit/*": ["toolkit/*"]
+        }
     }
 }

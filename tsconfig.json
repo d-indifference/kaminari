@@ -21,6 +21,7 @@
         "paths": {
             "@admin/*": ["admin/*"],
             "@config/*": ["config/*"],
+            "@exceptions/*": ["exceptions/*"],
             "@toolkit/*": ["toolkit/*"]
         }
     }

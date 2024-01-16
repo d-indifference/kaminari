@@ -17,6 +17,11 @@ import { SessionDto } from '@admin/dto/session';
 import { AdminSignInService } from '@admin/services';
 import { Request, Response } from 'express';
 import { SessionGuard, SignInPageGuard } from '@admin/guards';
+import { HeaderedPageDto, HeaderedSessionPageDto } from '@toolkit/dto/page';
+import {
+	HeaderedPageBuilder,
+	HeaderedSessionPageBuilder
+} from '@toolkit/page-builder';
 
 /**
  * Admin panel authentication controller
@@ -31,8 +36,12 @@ export class AdminController {
 	@Get()
 	@UseGuards(SessionGuard)
 	@Render('admin-index')
-	public index(): unknown {
-		return {};
+	public index(@Session() session: SessionDto): HeaderedSessionPageDto {
+		return new HeaderedSessionPageBuilder(new HeaderedSessionPageDto())
+			.setSession(session.payload)
+			.setHeader('Kaminari Image Board')
+			.setTitle('Admin — Kaminari Image Board')
+			.build();
 	}
 
 	/**
@@ -41,8 +50,11 @@ export class AdminController {
 	@Get('sign-in')
 	@UseGuards(SignInPageGuard)
 	@Render('sign-in')
-	public getSignIn(): unknown {
-		return {};
+	public getSignIn(): HeaderedPageDto {
+		return new HeaderedPageBuilder(new HeaderedPageDto())
+			.setHeader('Kaminari Image board')
+			.setTitle('Sign in — Kaminari Image Board')
+			.build();
 	}
 
 	/**

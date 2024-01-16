@@ -9,9 +9,18 @@ import { Logger } from '@nestjs/common';
 import { InitService } from '@toolkit/services';
 import * as session from 'express-session';
 import { sessionConfig } from '@config/session.config';
+import { NotFoundExceptionFilter } from '@exceptions/not-found-exception.filter';
+import { InternalServerErrorExceptionFilter } from '@exceptions/internal-server-error-exception.filter';
+import { UnauthorizedExceptionFilter } from '@exceptions/unauthorized-exception.filter';
+import { MethodNotAllowedExceptionFilter } from '@exceptions/method-not-allowed-exception.filter';
+import { ForbiddenExceptionFilter } from '@exceptions/forbidden-exception.filter';
+import { ConflictExceptionFilter } from '@exceptions/conflict-exception.filter';
 
 let internalPort: number;
 
+/**
+ * Application Entry Point
+ */
 const bootstrap = async (): Promise<void> => {
 	const app = await NestFactory.create<NestExpressApplication>(AppModule);
 
@@ -28,6 +37,13 @@ const bootstrap = async (): Promise<void> => {
 
 	app.use(cookieParser());
 	app.use(session(sessionConfig(configService)));
+
+	app.useGlobalFilters(new ConflictExceptionFilter());
+	app.useGlobalFilters(new ForbiddenExceptionFilter());
+	app.useGlobalFilters(new InternalServerErrorExceptionFilter());
+	app.useGlobalFilters(new MethodNotAllowedExceptionFilter());
+	app.useGlobalFilters(new NotFoundExceptionFilter());
+	app.useGlobalFilters(new UnauthorizedExceptionFilter());
 
 	await app.listen(internalPort);
 };

@@ -1,11 +1,24 @@
 <%- include('fragments/head'); %>
+<%- include('fragments/admin-session'); %>
+<%- include('fragments/admin-bar'); %>
 
-<h1>Admin panel</h1>
+<hr>
 
-[<a href="/admin/sign-out">Sign out</a>]
+<h1 class="site-title"><%= header %></h1>
 
-<p>
-    Here will be an admin panel
-</p>
+<div class="admin-panel-header">
+    Admin panel
+</div>
 
+<h3>Admin panel sections</h3>
+
+<ul>
+    <li><a href="/admin/technical">Technical info</a></li>
+    <li><a href="/admin/staff/me">My Profile</a></li>
+    <li><a href="/admin/staff">Administration & Moderation list</a></li>
+    <li><a href="#">Board list</a></li>
+</ul>
+
+<%- include('fragments/admin-bar'); %>
+<%- include('fragments/footer'); %>
 <%- include('fragments/eof'); %>

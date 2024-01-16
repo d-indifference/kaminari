@@ -1,0 +1,91 @@
+<%- include('fragments/head'); %>
+<%- include('fragments/admin-session'); %>
+<%- include('fragments/admin-bar'); %>
+
+<hr>
+
+<h1 class="site-title"><%= header %></h1>
+
+<div class="admin-panel-header">
+    New administration staff member
+</div>
+
+[<a href="/admin/staff">Go back</a>]
+<br>
+
+<div class="postarea">
+    <form action="<% if (isCreationForm) { %>/admin/staff/new<% } else { %>/admin/staff/<%= id %><% } %>" method="post">
+        <% if (isCreationForm) { %>
+            <p>
+                Give the username and password to the person who needs to log in with them.
+            </p>
+        <% } %>
+        <table cellpadding="7">
+            <tbody>
+                <tr>
+                    <td class="postblock">Email</td>
+                    <td>
+                        <% if (isCreationForm) { %>
+                            <input type="text" name="email" size="28">
+                        <% } else { %>
+                            <span><%= email %></span>
+                        <% } %>
+                    </td>
+                </tr>
+                <% if (isCreationForm) { %>
+                    <tr>
+                        <td class="postblock">Password</td>
+                        <td><input type="text" name="password" size="28" id="new_member_password"></td>
+                    </tr>
+                <% } %>
+                <tr>
+                    <td class="postblock">Role</td>
+                    <td>
+                        <select name="role">
+                            <option
+                                value="MODERATOR"
+                                <% if (!isCreationForm && role === 'MODERATOR') { %>selected<% } %>
+                            >
+                                Moderator
+                            </option>
+                            <option
+                                    value="ADMIN"
+                                    <% if (!isCreationForm && role === 'ADMIN') { %>selected<% } %>
+                            >
+                                Administrator
+                            </option>
+                        </select>
+                    </td>
+                </tr>
+            </tbody>
+        </table>
+
+        <input type="submit" value="Save changes">
+    </form>
+
+    <% if (!isCreationForm) { %>
+        <hr>
+
+        <h3 style="color: red; text-transform: uppercase">Danger zone</h3>
+
+        <p><b>Delete user</b></p>
+
+        <p>
+            Once you delete user <%= email %>, there is no going back. Please be certain.
+        </p>
+
+        <form action="/admin/staff/<%= id %>/delete" method="post">
+            <input type="submit" value="Delete user <%= email %>">
+        </form>
+    <% } %>
+</div>
+
+[<a href="/admin/staff">Go back</a>]
+
+<%- include('fragments/admin-bar'); %>
+
+<script src="/js/jquery-1.12.0.min.js"></script>
+<script src="/js/admin-bar.js"></script>
+
+<%- include('fragments/footer'); %>
+<%- include('fragments/eof'); %>

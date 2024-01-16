@@ -1,0 +1,40 @@
+html, body {
+    background-color: #eeeeee;
+    color: #333333;
+    font-family: "Trebuchet MS", Trebuchet, tahoma, serif;
+}
+
+a {
+    color: #ff6600;
+}
+
+a:hover {
+    color: #0066ff;
+}
+
+.adminbar {
+    clear: both;
+    font-size: .9em;
+}
+
+.adminbar a {
+    font-weight: bold;
+}
+
+.theader, .admin-panel-header {
+    background: #dddddd;
+    text-align: center;
+    padding: 2px;
+    color: #2266aa;
+    clear: both;
+    font-weight: bold;
+    margin-bottom: .5em;
+    border: solid 1px #cccccc;
+    -moz-border-radius: 5px;
+}
+
+.postblock {
+    background: transparent;
+    color: #002244;
+    font-weight: bold;
+}

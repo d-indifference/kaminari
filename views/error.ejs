@@ -1,0 +1,18 @@
+<%- include('fragments/head'); %>
+
+<div style="text-align: center">
+    <h1><%= header %></h1>
+
+    <% if (imgPath) { %>
+        <img src="<%= imgPath %>" alt="<%= title %>">
+    <% } %>
+
+    <p>
+        <%= message %>
+    </p>
+
+    <a href="/main">To the Home Page</a>
+</div>
+
+<%- include('fragments/footer'); %>
+<%- include('fragments/eof'); %>

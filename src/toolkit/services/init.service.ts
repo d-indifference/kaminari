@@ -4,15 +4,26 @@ import { ConfigService } from '@nestjs/config';
 import { UserRole } from '@prisma/client';
 import { CryptoUtils } from '@toolkit/crypto-utils';
 
+/**
+ * Initialization toolkit
+ */
 @Injectable()
 export class InitService {
 	private readonly logger = new Logger(InitService.name);
 
+	/**
+	 * Initialization toolkit
+	 * @param prisma Prisma Service
+	 * @param config Config Service
+	 */
 	constructor(
 		private readonly prisma: PrismaService,
 		private readonly config: ConfigService
 	) {}
 
+	/**
+	 * Create root user if user database is empty
+	 */
 	public async initRootUser(): Promise<void> {
 		const skipRootUser = this.config.getOrThrow<boolean>(
 			'KAMINARI_SKIP_ROOT_USER_CREATION'

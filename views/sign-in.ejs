@@ -1,13 +1,25 @@
 <%- include('fragments/head'); %>
 
-<form action="/admin/sign-in" method="post">
+<h1 class="site-title"><%= header %></h1>
+
+<hr>
+
+[<a href="/main">Home Page</a>]
+
+<div class="admin-panel-header">
+    Admin panel
+</div>
+
+<form action="/admin/sign-in" method="post" class="admin-sign-in-form">
     <label for="sign_in_email">Email</label>
-    <input type="email" name="email" id="sign_in_email">
+    <input type="email" name="email" id="sign_in_email" value="root@toor.com">
 
     <label for="sign_in_password">Password</label>
-    <input type="password" name="password" id="sign_in_password">
+    <input type="password" name="password" id="sign_in_password" value="toor">
 
     <button type="submit">Sign In</button>
 </form>
+
+<%- include('fragments/footer'); %>
 
 <%- include('fragments/eof'); %>

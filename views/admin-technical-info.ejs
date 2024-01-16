@@ -1,0 +1,85 @@
+<%- include('fragments/head'); %>
+<%- include('fragments/admin-session'); %>
+<%- include('fragments/admin-bar'); %>
+
+<hr>
+
+<h1 class="site-title"><%= header %></h1>
+
+<div class="admin-panel-header">
+    Technical info
+</div>
+
+[<a href="/admin">Go back</a>]
+
+<p>
+    <b>Welcome, <a href="/admin/staff/me"><%= currentSession.email %></a></b>
+</p>
+<p>Currently, there are <strong><%= totalPosts %></strong> posts on <strong><%= totalBoards %></strong> boards</p>
+
+<% if (currentSession.role === 'ADMIN') { %>
+    <p><a href='#'>Disk space used</a> is <strong><%= diskSpaceUsed %></strong></p>
+
+    <h3>Technical Info</h3>
+
+    <ul>
+        <li>Uptime (seconds) - <b><%= uptime %></b></li>
+    </ul>
+
+    <h5>CPU details (<%= cpus.length %>) [<a href="#" id="cpu_toggle">Show</a>]</h5>
+
+    <div id="cpu_section" style="display: none">
+        <hr>
+        <% cpus.forEach((cpu, idx) => { %>
+            <b>CPU #<%= idx + 1 %>:</b>
+            <ul>
+                <li>model - <b><%= cpu.model %></b></li>
+                <li>speed - <b><%= cpu.speed %></b></li>
+                <li>user usage time (microseconds) - <b><%= cpu.times.user %></b></li>
+                <li>system usage time (microseconds) - <b><%= cpu.times.sys %></b></li>
+                <li>nice mode time (microseconds) - <b><%= cpu.times.nice %></b></li>
+                <li>idle mode time (microseconds) - <b><%= cpu.times.idle %></b></li>
+                <li>irq mode time (microseconds) - <b><%= cpu.times.irq %></b></li>
+            </ul>
+        <% }); %>
+        <hr>
+    </div>
+
+    <p>Memory usage:</p>
+    <ul>
+        <li>Total - <b><%= memory.total %></b></li>
+        <li>Free - <b><%= memory.inUsage  %></b></li>
+        <li>In use - <b><%= memory.free %></b></li>
+    </ul>
+
+    <p>Debug port: <b><%= debugPort %></b> (see <a
+                href='https://nodejs.org/en/docs/guides/debugging-getting-started'
+                target='_blank'
+        >Node.js Debugging Guide</a>)</p>
+    <p>App port: <b><%= port %></b></p>
+
+    <p><abbr title='Docker container ID'>Host name</abbr>: <b><%= host %></b></p>
+
+    <h3>Node.js</h3>
+    <p>
+        <a href='https://nodejs.org/' target='_blank'>Node.js</a> version - <b>v<%= processVersions.node %></b>
+    </p>
+
+    <h5>Node details</h5>
+    <ol>
+        <% Object.keys(processVersions).forEach(proc => { %>
+            <li><%= proc %>: <b><%= processVersions[proc] %></b></li>
+        <% }); %>
+    </ol>
+
+<% } %>
+
+[<a href="/admin">Go back</a>]
+
+<%- include('fragments/admin-bar'); %>
+
+<script src="/js/jquery-1.12.0.min.js"></script>
+<script src="/js/admin-bar.js"></script>
+
+<%- include('fragments/footer'); %>
+<%- include('fragments/eof'); %>

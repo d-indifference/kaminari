@@ -1,14 +1,15 @@
-<%- include('fragments/head'); %>
-
-    <h1>Kaminari Image board</h1>
-
-    <h2>Welcome!</h2>
-
-    <p>[<a href="/admin">Management</a>]</p>
-
-    <p>
-        Lorem ipsum dolor sit amet, consectetur adipisicing elit. Alias amet aspernatur delectus enim, exercitationem fugit
-        ipsa iste iure magnam minima nam necessitatibus optio perspiciatis porro quasi quod ratione repellat voluptates.
-    </p>
-
-<%- include('fragments/eof'); %>
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Frameset//EN" "http://www.w3.org/TR/html4/frameset.dtd">
+<html lang="en">
+<head>
+    <title>Kaminari image board</title>
+    <link rel="shortcut icon" href="/icons/favicon.ico">
+</head>
+<frameset cols="15%,*" frameborder="1" border="1">
+    <frame src="/menu" name="menu" id="menu">
+    <frame src="/main" name="main" id="main">
+    <noframes>
+        Your browser doesn't support frames, which Kaminari Image Board requires.<br>
+        Please upgrade to something newer.
+    </noframes>
+</frameset>
+</html>

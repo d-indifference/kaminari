@@ -7,7 +7,7 @@
 <h1 class="site-title"><%= header %></h1>
 
 <div class="admin-panel-header">
-    New administration staff member
+    <% if (isCreationForm) { %>New<% } else { %>Edit<% } %> administration staff member
 </div>
 
 [<a href="/admin/staff">Go back</a>]
@@ -66,7 +66,7 @@
     <% if (!isCreationForm) { %>
         <hr>
 
-        <h3 style="color: red; text-transform: uppercase">Danger zone</h3>
+        <h3 class="danger-zone">Danger zone</h3>
 
         <p><b>Delete user</b></p>
 

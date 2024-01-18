@@ -28,10 +28,16 @@ import {
 import { Request, Response } from 'express';
 import { AdminStaffService } from '@admin/services';
 
+/**
+ * Admin panel staff controller
+ */
 @Controller('admin/staff')
 export class AdminStaffController {
 	constructor(private readonly adminStaffService: AdminStaffService) {}
 
+	/**
+	 * Get staff list
+	 */
 	@Get()
 	@UseGuards(SessionGuard)
 	@Render('admin-staff-list')
@@ -48,6 +54,9 @@ export class AdminStaffController {
 			.build();
 	}
 
+	/**
+	 * Get form for updating authenticated user's profile
+	 */
 	@Get('me')
 	@UseGuards(SessionGuard)
 	@Render('admin-staff-form-me')
@@ -63,6 +72,9 @@ export class AdminStaffController {
 			.build();
 	}
 
+	/**
+	 * Get form for staff creation
+	 */
 	@Get('new')
 	@UseGuards(SessionGuard)
 	@Render('admin-staff-form')
@@ -77,6 +89,9 @@ export class AdminStaffController {
 			.build();
 	}
 
+	/**
+	 * Get form for staff edition
+	 */
 	@Get(':id')
 	@UseGuards(SessionGuard)
 	@Render('admin-staff-form')
@@ -93,6 +108,9 @@ export class AdminStaffController {
 			.build();
 	}
 
+	/**
+	 * Update staff email
+	 */
 	@Post('me/email')
 	@UseGuards(SessionGuard)
 	@UsePipes(new ValidationPipe({ transform: true }))
@@ -106,6 +124,9 @@ export class AdminStaffController {
 		res.redirect('/admin');
 	}
 
+	/**
+	 * Update staff password
+	 */
 	@Post('me/password')
 	@UseGuards(SessionGuard)
 	@UsePipes(new ValidationPipe({ transform: true }))
@@ -119,6 +140,9 @@ export class AdminStaffController {
 		res.redirect('/admin');
 	}
 
+	/**
+	 * Create new staff
+	 */
 	@Post('new')
 	@UseGuards(SessionGuard)
 	@UsePipes(new ValidationPipe({ transform: true }))
@@ -131,6 +155,9 @@ export class AdminStaffController {
 		res.redirect(`/admin/staff/${createdUser.id}`);
 	}
 
+	/**
+	 * Update staff
+	 */
 	@Post(':id')
 	@UseGuards(SessionGuard)
 	@UsePipes(new ValidationPipe({ transform: true }))
@@ -144,6 +171,9 @@ export class AdminStaffController {
 		res.redirect(`/admin/staff/${updatedUser.id}`);
 	}
 
+	/**
+	 * Delete staff
+	 */
 	@Post(':id/delete')
 	@UseGuards(SessionGuard)
 	public async deleteStaff(

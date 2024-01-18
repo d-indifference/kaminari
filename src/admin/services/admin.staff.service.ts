@@ -24,6 +24,9 @@ import { PrismaPaginator } from '@toolkit/prisma-paginator';
 import { SessionPayloadDto } from '@admin/dto/session';
 import { Request } from 'express';
 
+/**
+ * Admin panel staff service
+ */
 @Injectable()
 export class AdminStaffService {
 	private readonly logger = new Logger(AdminStaffService.name);
@@ -33,6 +36,11 @@ export class AdminStaffService {
 		private readonly configService: ConfigService
 	) {}
 
+	/**
+	 * Find all staff members and get list page
+	 * @param pageNumber Page Number
+	 * @return Staff list page
+	 */
 	public async findAll(pageNumber = 0): Promise<StaffListDto> {
 		const pageSize = 10;
 
@@ -52,6 +60,11 @@ export class AdminStaffService {
 		return listDto;
 	}
 
+	/**
+	 * Find data for staff edition form
+	 * @param id Staff ID
+	 * @return Staff form page
+	 */
 	public async getById(id: string): Promise<StaffPageDto> {
 		const user = await this.prisma.user.findFirst({
 			where: { id }
@@ -70,6 +83,11 @@ export class AdminStaffService {
 		return page;
 	}
 
+	/**
+	 * Find data for staff by session payload
+	 * @param session Session payload
+	 * @return Staff profile form page
+	 */
 	public async getMyProfile(
 		session: SessionPayloadDto
 	): Promise<StaffMyProfileDto> {
@@ -84,6 +102,11 @@ export class AdminStaffService {
 		return profileDto;
 	}
 
+	/**
+	 * Create new staff member
+	 * @param dto Staff member creation DTO
+	 * @return New Staff member
+	 */
 	public async create(dto: StaffCreateDto): Promise<User> {
 		this.logger.log(logWithObject('Create new user', dto));
 
@@ -106,6 +129,12 @@ export class AdminStaffService {
 		return newUser;
 	}
 
+	/**
+	 * Update staff member
+	 * @param dto Staff member edit DTO
+	 * @param id Staff ID
+	 * @return Updated staff
+	 */
 	public async update(dto: StaffUpdateDto, id: string): Promise<User> {
 		this.logger.log(logWithObject('Update user', { id, ...dto }));
 
@@ -127,6 +156,11 @@ export class AdminStaffService {
 		return updatedUser;
 	}
 
+	/**
+	 * Update staff email of current authenticated user
+	 * @param dto Staff member edit DTO
+	 * @param req Express.js request
+	 */
 	public async updateEmail(
 		dto: StaffEmailUpdateDto,
 		req: Request
@@ -168,6 +202,11 @@ export class AdminStaffService {
 		);
 	}
 
+	/**
+	 * Update staff password of current authenticated user
+	 * @param dto Staff member edit DTO
+	 * @param session Current session payload DTO
+	 */
 	public async updatePassword(
 		dto: StaffPasswordUpdateDto,
 		session: SessionPayloadDto
@@ -211,6 +250,10 @@ export class AdminStaffService {
 		this.logger.log(logWithObject('Updated user', { id: updatedUser.id }));
 	}
 
+	/**
+	 * Remove Staff
+	 * @param id Staff ID
+	 */
 	public async remove(id: string): Promise<void> {
 		this.logger.log(logWithObject('Delete user', { id }));
 

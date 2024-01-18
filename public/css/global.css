@@ -92,3 +92,8 @@ form {
 .admin-sign-in-form {
     text-align: center;
 }
+
+.danger-zone {
+    color: red;
+    text-transform: uppercase
+}

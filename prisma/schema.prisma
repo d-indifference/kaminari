@@ -19,3 +19,33 @@ model User {
   encryptedPassword String   @db.VarChar(256)
   role              UserRole
 }
+
+model Board {
+  id            String         @id @default(dbgenerated("gen_random_uuid()")) @db.Uuid
+  createdAt     DateTime       @default(now())
+  url           String         @unique @db.VarChar(64)
+  name          String         @db.VarChar(256)
+  boardSettings BoardSettings?
+}
+
+model BoardSettings {
+  id                     String  @id @default(dbgenerated("gen_random_uuid()")) @db.Uuid
+  boardId                String  @unique @db.Uuid
+  board                  Board?  @relation(fields: [boardId], references: [id])
+  enablePosting          Boolean @db.Boolean
+  enableFilesOnThread    Boolean @db.Boolean
+  enableFilesOnReply     Boolean @db.Boolean
+  strictFileOnThread     Boolean @db.Boolean
+  strictFileOnReply      Boolean @db.Boolean
+  enableTripcode         Boolean @db.Boolean
+  enableMarkdown         Boolean @db.Boolean
+  delayBetweenThreads    Int     @db.Integer
+  delayBetweenReplies    Int     @db.Integer
+  threadKeepAliveTime    Int     @db.Integer
+  bumpLimit              Int     @db.Integer
+  strictAnonymousPosting Boolean @db.Boolean
+  maxThreadCount         Int     @db.Integer
+  additionalRules        String? @db.Text
+  maxFileSize            Int     @db.Integer
+  maxCommentLength       Int     @db.Integer
+}

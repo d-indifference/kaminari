@@ -1,23 +1,37 @@
-import { Injectable } from '@nestjs/common';
+import { Injectable, Logger } from '@nestjs/common';
 import { TechnicalInfoDto } from '@admin/dto';
 import * as osInfo from 'os';
 import { filesize } from 'filesize';
-import { ConfigService } from '@nestjs/config';
 import { SessionDto } from '@admin/dto/session';
 import { Request } from 'express';
+import { PrismaService } from '@toolkit/services';
+import { Prisma } from '@prisma/client';
 
+/**
+ * Admin technical information service
+ */
 @Injectable()
 export class AdminTechnicalInfoService {
-	constructor(private readonly configService: ConfigService) {}
+	private readonly logger = new Logger(AdminTechnicalInfoService.name);
 
-	public getTechnicalInfo(
+	constructor(private readonly prisma: PrismaService) {}
+
+	/**
+	 * Get technical information
+	 * @param req Express.js request
+	 * @param session Current session
+	 * @return Technical information page
+	 */
+	public async getTechnicalInfo(
 		req: Request,
 		session: SessionDto
-	): TechnicalInfoDto {
+	): Promise<TechnicalInfoDto> {
+		const totalBoards = await this.prisma.board.count();
+
 		const technicalInfo = new TechnicalInfoDto();
 		technicalInfo.diskSpaceUsed = '0 MB';
 		technicalInfo.totalPosts = 0;
-		technicalInfo.totalBoards = 0;
+		technicalInfo.totalBoards = totalBoards;
 		technicalInfo.cpus = osInfo.cpus();
 		technicalInfo.uptime = osInfo.uptime();
 
@@ -39,7 +53,18 @@ export class AdminTechnicalInfoService {
 		technicalInfo.host = osInfo.hostname();
 		technicalInfo.processVersions = process.versions;
 		technicalInfo.currentSession = session.payload;
+		technicalInfo.postgresVersion = await this.getPostgresVersion();
 
 		return technicalInfo;
+	}
+
+	private async getPostgresVersion(): Promise<string> {
+		this.logger.log(this, 'Get postgres version');
+
+		const postgresVersionQuery = await this.prisma.$queryRaw(
+			Prisma.sql`SELECT VERSION();`
+		);
+
+		return postgresVersionQuery[0]['version'];
 	}
 }

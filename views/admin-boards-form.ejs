@@ -1,0 +1,183 @@
+<%- include('fragments/head'); %>
+<%- include('fragments/admin-session'); %>
+<%- include('fragments/admin-bar'); %>
+
+<hr>
+
+<h1 class="site-title"><%= header %></h1>
+
+<div class="admin-panel-header">
+    <% if (isCreationForm) { %>New board<% } else { %>Edit board<% } %>
+</div>
+
+[<a href="/admin/boards">Go back</a>]
+<br>
+
+<div class="postarea">
+    <form action="<% if (isCreationForm) { %>/admin/boards/new<% } else { %>/admin/boards/<%= id %><% } %>" method="post">
+        <table cellpadding="7">
+            <tbody>
+            <tr>
+                <td class="postblock">URL</td>
+                <td><input type="text" name="url" size="28" <% if (!isCreationForm) { %>value="<%= url %>" <% } %>></td>
+            </tr>
+            <tr>
+                <td class="postblock">Name</td>
+                <td><input type="text" name="name" size="28" <% if (!isCreationForm) { %>value="<%= name %>" <% } %>></td>
+            </tr>
+            <tr>
+                <td class="postblock">Enable posting</td>
+                <td>
+                    <input type="checkbox" name="enablePosting"
+                    <% if (!isCreationForm) { %>
+                           <%= enablePosting ? 'checked' : '' %>
+                    <% } else { %>
+                            checked
+                    <% } %>>
+                </td>
+            </tr>
+            <tr>
+                <td class="postblock">Enable files on thread</td>
+                <td>
+                    <input type="checkbox" name="enableFilesOnThread"
+                    <% if (!isCreationForm) { %>
+                        <%= enableFilesOnThread ? 'checked' : '' %>
+                    <% } else { %>
+                           checked
+                    <% } %>>
+                </td>
+            </tr>
+            <tr>
+                <td class="postblock">Enable files on reply</td>
+                <td>
+                    <input type="checkbox" name="enableFilesOnReply"
+                    <% if (!isCreationForm) { %>
+                        <%= enableFilesOnReply ? 'checked' : '' %>
+                    <% } else { %>
+                           checked
+                    <% } %>>
+                </td>
+            </tr>
+            <tr>
+                <td class="postblock">Strict file on thread</td>
+                <td>
+                    <input type="checkbox" name="strictFileOnThread"
+                    <% if (!isCreationForm) { %>
+                        <%= strictFileOnThread ? 'checked' : '' %>
+                    <% } else { %>
+                           checked
+                    <% } %>>
+                </td>
+            </tr>
+            <tr>
+                <td class="postblock">Strict file on reply</td>
+                <td>
+                    <input type="checkbox" name="strictFileOnReply"
+                    <% if (!isCreationForm) { %>
+                        <%= strictFileOnReply ? 'checked' : '' %>
+                    <% } %>>
+                </td>
+            </tr>
+            <tr>
+                <td class="postblock">Enable tripcode</td>
+                <td>
+                    <input type="checkbox" name="enableTripcode"
+                    <% if (!isCreationForm) { %>
+                        <%= enableTripcode ? 'checked' : '' %>
+                    <% } else { %>
+                           checked
+                    <% } %>>
+                </td>
+            </tr>
+            <tr>
+                <td class="postblock">Enable markdown</td>
+                <td>
+                    <input type="checkbox" name="enableMarkdown"
+                    <% if (!isCreationForm) { %>
+                        <%= enableMarkdown ? 'checked' : '' %>
+                    <% } else { %>
+                           checked
+                     <% } %>>
+                </td>
+            </tr>
+            <tr>
+                <td class="postblock">Delay between threads</td>
+                <td>
+                    <input type="number" name="delayBetweenThreads" value="<% if (!isCreationForm) { %><%= delayBetweenThreads %><% } else { %>30000<% } %>">
+                    [<abbr title="Milliseconds"><b>?</b></abbr>]
+                </td>
+            </tr>
+            <tr>
+                <td class="postblock">Delay between replies</td>
+                <td>
+                    <input type="number" name="delayBetweenReplies" value="<% if (!isCreationForm) { %><%= delayBetweenReplies %><% } else { %>15000<% } %>">
+                    [<abbr title="Milliseconds"><b>?</b></abbr>]
+                </td>
+            </tr>
+            <tr>
+                <td class="postblock">Thread keep alive time</td>
+                <td>
+                    <input type="number" name="threadKeepAliveTime" value="<% if (!isCreationForm) { %><%= threadKeepAliveTime %><% } else { %>172800000<% } %>">
+                    [<abbr title="Milliseconds"><b>?</b></abbr>]
+                </td>
+            </tr>
+            <tr>
+                <td class="postblock">Bump limit</td>
+                <td><input type="number" name="bumpLimit" value="<% if (!isCreationForm) { %><%= bumpLimit %><% } else { %>500<% } %>"></td>
+            </tr>
+            <tr>
+                <td class="postblock">Strict anonymous posting</td>
+                <td><input type="checkbox" name="strictAnonymousPosting"
+                    <% if (!isCreationForm) { %>
+                        <%= strictAnonymousPosting ? 'checked' : '' %>
+                    <% } %>></td>
+            </tr>
+            <tr>
+                <td class="postblock">Max thread count</td>
+                <td><input type="number" name="maxThreadCount" value="<% if (!isCreationForm) { %><%= maxThreadCount %><% } else { %>50<% } %>"></td>
+            </tr>
+            <tr>
+                <td class="postblock">Additional rules</td>
+                <td><textarea name="additionalRules" cols="30" rows="10"><% if (!isCreationForm) { %><%= additionalRules %><% } %></textarea></td>
+            </tr>
+            <tr>
+                <td class="postblock">Max file size</td>
+                <td><input type="number" name="maxFileSize" value="<% if (!isCreationForm) { %><%= maxFileSize %><% } else { %>10000000<% } %>">
+                    [<abbr title="Bytes"><b>?</b></abbr>]</td>
+            </tr>
+            <tr>
+                <td class="postblock">Max comment length</td>
+                <td><input type="number" name="maxCommentLength" value="<% if (!isCreationForm) { %><%= maxCommentLength %><% } else { %>1000<% } %>"></td>
+            </tr>
+            </tbody>
+        </table>
+
+        <input type="submit" value="Save changes">
+    </form>
+
+    <% if (!isCreationForm) { %>
+        <hr>
+
+        <h3 class="danger-zone">Danger zone</h3>
+
+        <p><b>Delete board</b></p>
+
+        <p>
+            Once you delete board <%= name %>, there is no going back. Please be certain.
+        </p>
+
+        <form action="/admin/boards/<%= id %>/delete" method="post">
+            <input type="submit" value="Delete board <%= name %>">
+        </form>
+    <% } %>
+</div>
+
+[<a href="/admin/boards">Go back</a>]
+
+<%- include('fragments/admin-bar'); %>
+
+<script src="/js/jquery-1.12.0.min.js"></script>
+<script src="/js/admin-bar.js"></script>
+
+<%- include('fragments/footer'); %>
+<%- include('fragments/eof'); %>

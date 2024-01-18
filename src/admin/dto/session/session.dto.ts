@@ -2,11 +2,11 @@ import { Cookie } from 'express-session';
 import { SessionPayloadDto } from '@admin/dto/session/session-payload.dto';
 
 /**
- * req.session object DTO
+ * `req.session` object DTO
  */
 export class SessionDto {
 	/**
-	 * req.session cookie
+	 * `req.session` cookie
 	 */
 	cookie: Cookie;
 

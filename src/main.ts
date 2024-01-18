@@ -15,6 +15,7 @@ import { UnauthorizedExceptionFilter } from '@exceptions/unauthorized-exception.
 import { MethodNotAllowedExceptionFilter } from '@exceptions/method-not-allowed-exception.filter';
 import { ForbiddenExceptionFilter } from '@exceptions/forbidden-exception.filter';
 import { ConflictExceptionFilter } from '@exceptions/conflict-exception.filter';
+import { BadRequestExceptionFilter } from '@exceptions/bad-request-exception.filter';
 
 let internalPort: number;
 
@@ -38,6 +39,7 @@ const bootstrap = async (): Promise<void> => {
 	app.use(cookieParser());
 	app.use(session(sessionConfig(configService)));
 
+	app.useGlobalFilters(new BadRequestExceptionFilter());
 	app.useGlobalFilters(new ConflictExceptionFilter());
 	app.useGlobalFilters(new ForbiddenExceptionFilter());
 	app.useGlobalFilters(new InternalServerErrorExceptionFilter());

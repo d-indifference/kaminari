@@ -3,7 +3,6 @@ import {
 	Catch,
 	ConflictException,
 	ExceptionFilter,
-	ForbiddenException,
 	Logger
 } from '@nestjs/common';
 
@@ -11,7 +10,7 @@ import {
 export class ConflictExceptionFilter implements ExceptionFilter {
 	private readonly logger = new Logger(ConflictExceptionFilter.name);
 
-	public catch(exception: ForbiddenException, host: ArgumentsHost): void {
+	public catch(exception: ConflictException, host: ArgumentsHost): void {
 		const ctx = host.switchToHttp();
 		const response = ctx.getResponse();
 

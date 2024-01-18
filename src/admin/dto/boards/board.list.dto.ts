@@ -1,14 +1,14 @@
 import { HeaderedSessionPageDto } from '@toolkit/dto/page';
-import { StaffDto } from '@admin/dto/staff/staff.dto';
+import { BoardDto } from '@admin/dto/boards/board.dto';
 
 /**
- * Page of staff in admin panel
+ * Page of boards in admin panel
  */
-export class StaffListDto extends HeaderedSessionPageDto {
+export class BoardListDto extends HeaderedSessionPageDto {
 	/**
-	 * Staff list
+	 * Boards list
 	 */
-	staff: StaffDto[];
+	boards: BoardDto[];
 
 	/**
 	 * Total records count

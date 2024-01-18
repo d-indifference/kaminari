@@ -22,15 +22,18 @@ export class AdminTechnicalInfoController {
 		private readonly adminTechnicalInfoService: AdminTechnicalInfoService
 	) {}
 
+	/**
+	 * Get technical info about site
+	 */
 	@Get()
 	@UseGuards(SessionGuard)
 	@Render('admin-technical-info')
-	public index(
+	public async index(
 		@Req() req: Request,
 		@Session() session: SessionDto
-	): TechnicalInfoDto {
+	): Promise<TechnicalInfoDto> {
 		return new HeaderedSessionPageBuilder(
-			this.adminTechnicalInfoService.getTechnicalInfo(req, session)
+			await this.adminTechnicalInfoService.getTechnicalInfo(req, session)
 		)
 			.setSession(session.payload)
 			.setHeader('Kaminari Image Board')

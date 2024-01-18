@@ -1,0 +1,59 @@
+<%- include('fragments/head'); %>
+<%- include('fragments/admin-session'); %>
+<%- include('fragments/admin-bar'); %>
+
+<hr>
+
+<h1 class="site-title"><%= header %></h1>
+
+<div class="admin-panel-header">
+    Board list
+</div>
+
+[<a href="/admin">Go back</a>]
+<br>
+
+<div style="text-align: center; margin-bottom: 1em">
+    [<a href="/admin/boards/new">Create new board</a>]
+</div>
+
+<table border=1 cellspacing=0 cellpadding="5" class="dashboard-table">
+    <thead>
+    <tr bgcolor="6080f6">
+        <th scope="col">URL</th>
+        <th scope="col">Name</th>
+        <th scope="col">Total posts</th>
+        <th scope="col">Total files</th>
+        <th scope="col">Disk space usage</th>
+        <th scope="col"></th>
+    </tr>
+    </thead>
+    <tbody>
+    <% boards.forEach((board, idx) => { %>
+        <tr bgcolor="<%= (idx % 2) ? "d6d6f6" : "f6f6f6" %>">
+            <td><a href="/<%= board.url %>"><b>/<%= board.url %></b></a></td>
+            <td><%= board.name %></td>
+            <td><%= board.totalPosts %></td>
+            <td><%= board.totalFiles %></td>
+            <td><%= board.diskSpaceUsage %></td>
+            <td>[<a href="/admin/boards/<%= board.id %>">Edit</a>]</td>
+        </tr>
+    <% }); %>
+</table>
+
+<p style="text-align: center;">Total: <%= totalRecords %></p>
+
+<div style="text-align: center; margin-top: 1em">
+    <% if (previousPageNumber !== undefined) { %>[<a href="/admin/staff?page=<%= previousPageNumber %>" title="Previous">←</a>]<% } %>
+    <% if (nextPageNumber !== undefined) { %>[<a href="/admin/staff?page=<%= nextPageNumber %>" title="Next">→</a>]<% } %>
+</div>
+
+[<a href="/admin">Go back</a>]
+
+<%- include('fragments/admin-bar'); %>
+
+<script src="/js/jquery-1.12.0.min.js"></script>
+<script src="/js/admin-bar.js"></script>
+
+<%- include('fragments/footer'); %>
+<%- include('fragments/eof'); %>

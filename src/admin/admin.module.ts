@@ -2,14 +2,19 @@ import { Module } from '@nestjs/common';
 import { ConfigModule, ConfigService } from '@nestjs/config';
 import { PrismaService } from '@toolkit/services';
 import {
+	AdminBoardsController,
 	AdminController,
 	AdminStaffController,
 	AdminTechnicalInfoController
 } from '@admin/controllers';
-import { AdminSignInService, AdminTechnicalInfoService } from '@admin/services';
+import {
+	AdminBoardsService,
+	AdminSignInService,
+	AdminTechnicalInfoService,
+	AdminStaffService
+} from '@admin/services';
 import { NestjsFormDataModule } from 'nestjs-form-data';
 import { nestjsFormDataConfig } from '@config/nestjs-form-data.config';
-import { AdminStaffService } from '@admin/services/admin.staff.service';
 
 @Module({
 	imports: [
@@ -23,13 +28,15 @@ import { AdminStaffService } from '@admin/services/admin.staff.service';
 	controllers: [
 		AdminController,
 		AdminTechnicalInfoController,
-		AdminStaffController
+		AdminStaffController,
+		AdminBoardsController
 	],
 	providers: [
 		PrismaService,
 		AdminSignInService,
 		AdminTechnicalInfoService,
-		AdminStaffService
+		AdminStaffService,
+		AdminBoardsService
 	],
 	exports: []
 })

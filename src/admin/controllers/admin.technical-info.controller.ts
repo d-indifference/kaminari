@@ -12,6 +12,7 @@ import { AdminTechnicalInfoService } from '@admin/services';
 import { SessionDto } from '@admin/dto/session';
 import { Request } from 'express';
 import { HeaderedSessionPageBuilder } from '@toolkit/page-builder';
+import { SettingsService } from '@settings/services';
 
 /**
  * Admin panel authentication controller
@@ -19,7 +20,8 @@ import { HeaderedSessionPageBuilder } from '@toolkit/page-builder';
 @Controller('admin/technical')
 export class AdminTechnicalInfoController {
 	constructor(
-		private readonly adminTechnicalInfoService: AdminTechnicalInfoService
+		private readonly adminTechnicalInfoService: AdminTechnicalInfoService,
+		private readonly settingsService: SettingsService
 	) {}
 
 	/**
@@ -36,8 +38,8 @@ export class AdminTechnicalInfoController {
 			await this.adminTechnicalInfoService.getTechnicalInfo(req, session)
 		)
 			.setSession(session.payload)
-			.setHeader('Kaminari Image Board')
-			.setTitle('Technical Info — Kaminari Image Board')
+			.setHeader(this.settingsService.getHeader())
+			.setTitle(this.settingsService.buildPageTitle('Technical Info'))
 			.build();
 	}
 }

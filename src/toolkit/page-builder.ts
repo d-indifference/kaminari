@@ -1,6 +1,7 @@
 import {
 	BasePageDto,
 	BaseSessionPageDto,
+	ForumPageDto,
 	HeaderedPageDto,
 	HeaderedSessionPageDto
 } from '@toolkit/dto/page';
@@ -69,6 +70,20 @@ export class HeaderedSessionPageBuilder<
 
 	public setHeader(header: string): HeaderedPageBuilder<T> {
 		this.obj.header = header;
+
+		return this;
+	}
+}
+
+export class ForumPageBuilder<
+	T extends ForumPageDto
+> extends HeaderedPageBuilder<T> {
+	constructor(obj: T) {
+		super(obj);
+	}
+
+	public setBoardLinks(boardLinks: string): ForumPageBuilder<T> {
+		this.obj.boardLinks = boardLinks;
 
 		return this;
 	}

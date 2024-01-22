@@ -251,10 +251,12 @@ export class AdminBoardsService {
 			where: { url: dto.url }
 		});
 
-		if (board.id !== id) {
-			throw new ConflictException(
-				`Board with URL ${dto.url} already exists`
-			);
+		if (board) {
+			if (board.id !== id) {
+				throw new ConflictException(
+					`Board with URL ${dto.url} already exists`
+				);
+			}
 		}
 	}
 }

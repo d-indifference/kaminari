@@ -27,13 +27,17 @@ import {
 } from '@admin/dto/staff';
 import { Request, Response } from 'express';
 import { AdminStaffService } from '@admin/services';
+import { SettingsService } from '@settings/services';
 
 /**
  * Admin panel staff controller
  */
 @Controller('admin/staff')
 export class AdminStaffController {
-	constructor(private readonly adminStaffService: AdminStaffService) {}
+	constructor(
+		private readonly settingsService: SettingsService,
+		private readonly adminStaffService: AdminStaffService
+	) {}
 
 	/**
 	 * Get staff list
@@ -49,8 +53,10 @@ export class AdminStaffController {
 
 		return new HeaderedSessionPageBuilder(data)
 			.setSession(session.payload)
-			.setHeader('Kaminari Image board')
-			.setTitle('Administration Staff — Kaminari Image Board')
+			.setHeader(this.settingsService.getHeader())
+			.setTitle(
+				this.settingsService.buildPageTitle('Administration Staff')
+			)
 			.build();
 	}
 
@@ -67,8 +73,8 @@ export class AdminStaffController {
 
 		return new HeaderedSessionPageBuilder(data)
 			.setSession(session.payload)
-			.setHeader('Kaminari Image board')
-			.setTitle('Edit my profile — Kaminari Image Board')
+			.setHeader(this.settingsService.getHeader())
+			.setTitle(this.settingsService.buildPageTitle('Edit my profile'))
 			.build();
 	}
 
@@ -84,8 +90,8 @@ export class AdminStaffController {
 
 		return new HeaderedSessionPageBuilder(data)
 			.setSession(session.payload)
-			.setHeader('Kaminari Image board')
-			.setTitle('New Staff Member — Kaminari Image Board')
+			.setHeader(this.settingsService.getHeader())
+			.setTitle(this.settingsService.buildPageTitle('New staff member'))
 			.build();
 	}
 
@@ -103,8 +109,8 @@ export class AdminStaffController {
 
 		return new HeaderedSessionPageBuilder(data)
 			.setSession(session.payload)
-			.setHeader('Kaminari Image board')
-			.setTitle('Edit Staff Member — Kaminari Image Board')
+			.setHeader(this.settingsService.getHeader())
+			.setTitle(this.settingsService.buildPageTitle('Edit staff member'))
 			.build();
 	}
 

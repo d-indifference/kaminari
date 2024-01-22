@@ -22,6 +22,7 @@
             "@admin/*": ["admin/*"],
             "@config/*": ["config/*"],
             "@exceptions/*": ["exceptions/*"],
+            "@settings/*": ["settings/*"],
             "@toolkit/*": ["toolkit/*"]
         }
     }

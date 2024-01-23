@@ -5,6 +5,7 @@ import { PrismaService, InitService } from '@toolkit/services';
 import { envValidationSchemaConfig } from '@config/env-validation-schema.config';
 import { AdminModule } from '@admin/admin.module';
 import { SettingsModule } from '@settings/settings.module';
+import { MigratorModule } from '@migrator/migrator.module';
 
 @Module({
 	imports: [
@@ -14,7 +15,8 @@ import { SettingsModule } from '@settings/settings.module';
 			validationSchema: envValidationSchemaConfig
 		}),
 		AdminModule,
-		SettingsModule
+		SettingsModule,
+		MigratorModule
 	],
 	controllers: [AppController],
 	providers: [PrismaService, InitService]

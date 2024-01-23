@@ -3,7 +3,8 @@ import { ConfigModule, ConfigService } from '@nestjs/config';
 import { PrismaService } from '@toolkit/services';
 import {
 	AdminBoardsController,
-	AdminController, AdminSettingsController,
+	AdminController,
+	AdminSettingsController,
 	AdminStaffController,
 	AdminTechnicalInfoController
 } from '@admin/controllers';

@@ -4,6 +4,8 @@ import { ConfigModule } from '@nestjs/config';
 import { PrismaService, InitService } from '@toolkit/services';
 import { envValidationSchemaConfig } from '@config/env-validation-schema.config';
 import { AdminModule } from '@admin/admin.module';
+import { SettingsModule } from '@settings/settings.module';
+import { MigratorModule } from '@migrator/migrator.module';
 
 @Module({
 	imports: [
@@ -12,7 +14,9 @@ import { AdminModule } from '@admin/admin.module';
 			isGlobal: true,
 			validationSchema: envValidationSchemaConfig
 		}),
-		AdminModule
+		AdminModule,
+		SettingsModule,
+		MigratorModule
 	],
 	controllers: [AppController],
 	providers: [PrismaService, InitService]

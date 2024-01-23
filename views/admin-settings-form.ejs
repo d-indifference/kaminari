@@ -1,0 +1,68 @@
+<%- include('fragments/head'); %>
+<%- include('fragments/admin-session'); %>
+<%- include('fragments/admin-bar'); %>
+
+<hr>
+
+<h1 class="site-title"><%= header %></h1>
+
+<div class="admin-panel-header">
+    Global site settings
+</div>
+
+[<a href="/admin">Go back</a>]
+<br>
+
+<div class="postarea">
+    <form action="/admin/settings" method="post">
+        <table cellpadding="7">
+            <tbody>
+            <tr>
+                <td class="postblock">Header</td>
+                <td><input type="text" name="header" size="28" value="<%= settings.header %>"></td>
+            </tr>
+            <tr>
+                <td class="postblock">Slogan</td>
+                <td><input type="text" name="slogan" size="28" value="<%= settings.slogan %>"></td>
+            </tr>
+            <tr>
+                <td class="postblock">Description</td>
+                <td><textarea name="description" cols="30" rows="10"><%= settings.description %></textarea></td>
+            </tr>
+            <tr>
+                <td class="postblock">Board Links</td>
+                <td><textarea name="boardLinks" cols="30" rows="10"><%= settings.boardLinks %></textarea></td>
+            </tr>
+            <tr>
+                <td class="postblock">Left Menu Header</td>
+                <td><input type="text" name="leftMenuHeader" size="28" value="<%= settings.leftMenuHeader %>"></td>
+            </tr>
+            <tr>
+                <td class="postblock">Left Menu Content</td>
+                <td><textarea name="leftMenuContent" cols="30" rows="10"><%= settings.leftMenuContent %></textarea></td>
+            </tr>
+            <tr>
+                <td class="postblock">FAQ Page</td>
+                <td><textarea name="faqHtml" cols="30" rows="10"><%= settings.faqHtml %></textarea></td>
+            </tr>
+            <tr>
+                <td class="postblock">Rules Page</td>
+                <td><textarea name="rulesHtml" cols="30" rows="10"><%= settings.rulesHtml %></textarea></td>
+            </tr>
+            </tbody>
+        </table>
+
+        <input type="submit" value="Save changes">
+    </form>
+</div>
+
+[<a href="/admin">Go back</a>]
+
+<%- include('fragments/admin-bar'); %>
+
+<script src="/js/jquery-1.12.0.min.js"></script>
+<script src="/js/admin-bar.js"></script>
+
+<%- include('fragments/footer'); %>
+<%- include('fragments/eof'); %>
+

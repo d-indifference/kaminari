@@ -22,13 +22,17 @@ import {
 	HeaderedPageBuilder,
 	HeaderedSessionPageBuilder
 } from '@toolkit/page-builder';
+import { SettingsService } from '@settings/services';
 
 /**
  * Admin panel authentication controller
  */
 @Controller('admin')
 export class AdminController {
-	constructor(private readonly adminSignInService: AdminSignInService) {}
+	constructor(
+		private readonly settingsService: SettingsService,
+		private readonly adminSignInService: AdminSignInService
+	) {}
 
 	/**
 	 * Start admin panel page
@@ -39,8 +43,8 @@ export class AdminController {
 	public index(@Session() session: SessionDto): HeaderedSessionPageDto {
 		return new HeaderedSessionPageBuilder(new HeaderedSessionPageDto())
 			.setSession(session.payload)
-			.setHeader('Kaminari Image Board')
-			.setTitle('Admin — Kaminari Image Board')
+			.setHeader(this.settingsService.getHeader())
+			.setTitle(this.settingsService.buildPageTitle('Admin'))
 			.build();
 	}
 
@@ -52,8 +56,8 @@ export class AdminController {
 	@Render('sign-in')
 	public getSignIn(): HeaderedPageDto {
 		return new HeaderedPageBuilder(new HeaderedPageDto())
-			.setHeader('Kaminari Image board')
-			.setTitle('Sign in — Kaminari Image Board')
+			.setHeader(this.settingsService.getHeader())
+			.setTitle(this.settingsService.buildPageTitle('Sign in'))
 			.build();
 	}
 

@@ -22,6 +22,8 @@
             "@admin/*": ["admin/*"],
             "@config/*": ["config/*"],
             "@exceptions/*": ["exceptions/*"],
+            "@migrator/*": ["migrator/*"],
+            "@settings/*": ["settings/*"],
             "@toolkit/*": ["toolkit/*"]
         }
     }

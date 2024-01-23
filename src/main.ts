@@ -16,6 +16,8 @@ import { MethodNotAllowedExceptionFilter } from '@exceptions/method-not-allowed-
 import { ForbiddenExceptionFilter } from '@exceptions/forbidden-exception.filter';
 import { ConflictExceptionFilter } from '@exceptions/conflict-exception.filter';
 import { BadRequestExceptionFilter } from '@exceptions/bad-request-exception.filter';
+import { MigratorService } from '@migrator/migrator.service';
+import * as fsExtra from 'fs-extra';
 
 let internalPort: number;
 
@@ -26,28 +28,63 @@ const bootstrap = async (): Promise<void> => {
 	const app = await NestFactory.create<NestExpressApplication>(AppModule);
 
 	const configService = app.get(ConfigService);
-	const initService = app.get(InitService);
+	const migratorService = app.get(MigratorService);
 
-	internalPort = configService.get<number>('KAMINARI_INTERNAL_PORT', 3000);
+	const canContinueInit = await migratorService.connectToDb();
 
-	await initService.initRootUser();
+	if (canContinueInit) {
+		if (!migratorService.isMigrationSkipped()) {
+			Logger.log('Database migrations are not skipped', 'main');
 
-	app.useStaticAssets(path.join(process.cwd(), 'public'));
-	app.setBaseViewsDir(path.join(process.cwd(), 'views'));
-	app.setViewEngine('ejs');
+			await migratorService.runPrismaMigrations();
+		} else {
+			Logger.log('Database migrations skipped', 'main');
+		}
 
-	app.use(cookieParser());
-	app.use(session(sessionConfig(configService)));
+		internalPort = configService.get<number>(
+			'KAMINARI_INTERNAL_PORT',
+			3000
+		);
 
-	app.useGlobalFilters(new BadRequestExceptionFilter());
-	app.useGlobalFilters(new ConflictExceptionFilter());
-	app.useGlobalFilters(new ForbiddenExceptionFilter());
-	app.useGlobalFilters(new InternalServerErrorExceptionFilter());
-	app.useGlobalFilters(new MethodNotAllowedExceptionFilter());
-	app.useGlobalFilters(new NotFoundExceptionFilter());
-	app.useGlobalFilters(new UnauthorizedExceptionFilter());
+		const initService = app.get(InitService);
 
-	await app.listen(internalPort);
+		await initService.initRootUser();
+
+		await fsExtra.ensureDir(
+			path.join(
+				process.cwd(),
+				configService.getOrThrow<string>('KAMINARI_ASSETS_PUBLIC_DIR'),
+				configService.getOrThrow<string>('KAMINARI_FILES_DIR')
+			)
+		);
+
+		app.useStaticAssets(
+			path.join(
+				process.cwd(),
+				configService.getOrThrow<string>('KAMINARI_ASSETS_PUBLIC_DIR')
+			)
+		);
+		app.setBaseViewsDir(
+			path.join(
+				process.cwd(),
+				configService.getOrThrow<string>('KAMINARI_ASSETS_VIEWS_DIR')
+			)
+		);
+		app.setViewEngine('ejs');
+
+		app.use(cookieParser());
+		app.use(session(sessionConfig(configService)));
+
+		app.useGlobalFilters(new BadRequestExceptionFilter());
+		app.useGlobalFilters(new ConflictExceptionFilter());
+		app.useGlobalFilters(new ForbiddenExceptionFilter());
+		app.useGlobalFilters(new InternalServerErrorExceptionFilter());
+		app.useGlobalFilters(new MethodNotAllowedExceptionFilter());
+		app.useGlobalFilters(new NotFoundExceptionFilter());
+		app.useGlobalFilters(new UnauthorizedExceptionFilter());
+
+		await app.listen(internalPort);
+	}
 };
 
 bootstrap().then(() => {

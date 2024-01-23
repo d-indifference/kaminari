@@ -25,13 +25,17 @@ import {
 } from '@admin/dto/boards';
 import { AdminBoardsService } from '@admin/services';
 import { validateSync } from 'class-validator';
+import { SettingsService } from '@settings/services';
 
 /**
  * Admin panel boards management controller
  */
 @Controller('admin/boards')
 export class AdminBoardsController {
-	constructor(private readonly adminBoardsService: AdminBoardsService) {}
+	constructor(
+		private readonly settingsService: SettingsService,
+		private readonly adminBoardsService: AdminBoardsService
+	) {}
 
 	/**
 	 * Get board list
@@ -47,8 +51,8 @@ export class AdminBoardsController {
 
 		return new HeaderedSessionPageBuilder(data)
 			.setSession(session.payload)
-			.setHeader('Kaminari Image board')
-			.setTitle('Boards — Kaminari Image Board')
+			.setHeader(this.settingsService.getHeader())
+			.setTitle(this.settingsService.buildPageTitle('Boards'))
 			.build();
 	}
 
@@ -64,8 +68,8 @@ export class AdminBoardsController {
 
 		return new HeaderedSessionPageBuilder(data)
 			.setSession(session.payload)
-			.setHeader('Kaminari Image board')
-			.setTitle('New board — Kaminari Image Board')
+			.setHeader(this.settingsService.getHeader())
+			.setTitle(this.settingsService.buildPageTitle('New board'))
 			.build();
 	}
 
@@ -83,8 +87,8 @@ export class AdminBoardsController {
 
 		return new HeaderedSessionPageBuilder(data)
 			.setSession(session.payload)
-			.setHeader('Kaminari Image board')
-			.setTitle('Edit board — Kaminari Image Board')
+			.setHeader(this.settingsService.getHeader())
+			.setTitle(this.settingsService.buildPageTitle('Edit board'))
 			.build();
 	}
 

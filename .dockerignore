@@ -1,9 +1,9 @@
 /dist
 /node_modules
 /volumes
+/public/files
 /.git
 /.idea
-.env
 .env.sample
 README.MD
 LICENSE

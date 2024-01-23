@@ -30,6 +30,31 @@ services:
     networks:
       - kaminari-network
 
+  kaminari:
+    container_name: app.kaminari
+    hostname: app.kaminari
+    depends_on:
+      - postgres
+    image: kaminari
+    env_file:
+      - .env
+    build:
+      dockerfile: './Dockerfile'
+      context: '.'
+      args:
+        KAMINARI_VOLUMES_DIR: '${KAMINARI_VOLUMES_DIR}'
+        KAMINARI_ASSETS_PUBLIC_DIR: '${KAMINARI_ASSETS_PUBLIC_DIR}'
+        KAMINARI_FILES_DIR: '${KAMINARI_FILES_DIR}'
+    ports:
+      - '${KAMINARI_EXTERNAL_PORT}:${KAMINARI_INTERNAL_PORT}'
+    expose:
+      - '${KAMINARI_EXTERNAL_PORT}'
+    volumes:
+      - ./${KAMINARI_ASSETS_PUBLIC_DIR}/${KAMINARI_FILES_DIR}:/app/${KAMINARI_ASSETS_PUBLIC_DIR}/${KAMINARI_FILES_DIR}
+      - ${KAMINARI_SETTINGS_VOLUME}:/app/${KAMINARI_VOLUMES_DIR}/kaminari
+    networks:
+      - kaminari-network
+
 networks:
   kaminari-network:
     name: 'net.kaminari'

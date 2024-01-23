@@ -1,0 +1,19 @@
+FROM node:21-alpine
+
+WORKDIR /app
+
+ARG KAMINARI_VOLUMES_DIR
+ARG KAMINARI_ASSETS_PUBLIC_DIR
+ARG KAMINARI_FILES_DIR
+
+COPY . .
+
+RUN npm i
+
+RUN npm run build
+
+RUN mkdir -p /app/${KAMINARI_ASSETS_PUBLIC_DIR}/${KAMINARI_FILES_DIR}
+RUN mkdir -p /app/${KAMINARI_VOLUMES_DIR}
+RUN mkdir -p /app/${KAMINARI_VOLUMES_DIR}/kaminari
+
+CMD ["npm", "run", "start:prod"]

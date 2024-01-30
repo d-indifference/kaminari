@@ -3,6 +3,7 @@ import {
 	Controller,
 	Get,
 	Param,
+	ParseUUIDPipe,
 	Post,
 	Query,
 	Render,
@@ -28,6 +29,7 @@ import {
 import { Request, Response } from 'express';
 import { AdminStaffService } from '@admin/services';
 import { SettingsService } from '@settings/services';
+import { PageNumberPipe } from '@toolkit/pipes';
 
 /**
  * Admin panel staff controller
@@ -47,9 +49,9 @@ export class AdminStaffController {
 	@Render('admin-staff-list')
 	public async index(
 		@Session() session: SessionDto,
-		@Query('page') page?: number
+		@Query('page', new PageNumberPipe()) page?: number
 	): Promise<StaffListDto> {
-		const data = await this.adminStaffService.findAll(page ?? 0);
+		const data = await this.adminStaffService.findAll(page);
 
 		return new HeaderedSessionPageBuilder(data)
 			.setSession(session.payload)
@@ -102,7 +104,7 @@ export class AdminStaffController {
 	@UseGuards(SessionGuard)
 	@Render('admin-staff-form')
 	public async getEditStaffForm(
-		@Param('id') id: string,
+		@Param('id', new ParseUUIDPipe()) id: string,
 		@Session() session: SessionDto
 	): Promise<StaffPageDto> {
 		const data = await this.adminStaffService.getById(id);
@@ -168,7 +170,7 @@ export class AdminStaffController {
 	@UseGuards(SessionGuard)
 	@UsePipes(new ValidationPipe({ transform: true }))
 	public async updateStaff(
-		@Param('id') id: string,
+		@Param('id', new ParseUUIDPipe()) id: string,
 		@Body() dto: StaffUpdateDto,
 		@Res() res: Response
 	): Promise<void> {
@@ -183,7 +185,7 @@ export class AdminStaffController {
 	@Post(':id/delete')
 	@UseGuards(SessionGuard)
 	public async deleteStaff(
-		@Param('id') id: string,
+		@Param('id', new ParseUUIDPipe()) id: string,
 		@Res() res: Response
 	): Promise<void> {
 		await this.adminStaffService.remove(id);

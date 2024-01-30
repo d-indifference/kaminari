@@ -7,10 +7,7 @@ import {
 	MaxLength,
 	MinLength
 } from 'class-validator';
-
-type HtmlCheckboxBoolean = 'on' | undefined;
-
-const htmlCheckboxBooleanRegexp = /^on$/;
+import { HtmlCheckboxBoolean, htmlCheckboxBooleanRegexp } from '@toolkit/types';
 
 /**
  * Board DTO for creation / edition form data

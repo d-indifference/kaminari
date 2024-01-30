@@ -29,16 +29,19 @@
     </tr>
     </thead>
     <tbody>
-    <% boards.forEach((board, idx) => { %>
-        <tr bgcolor="<%= (idx % 2) ? "d6d6f6" : "f6f6f6" %>">
-            <td><a href="/<%= board.url %>"><b>/<%= board.url %></b></a></td>
-            <td><%= board.name %></td>
-            <td><%= board.totalPosts %></td>
-            <td><%= board.totalFiles %></td>
-            <td><%= board.diskSpaceUsage %></td>
-            <td>[<a href="/admin/boards/<%= board.id %>">Edit</a>]</td>
-        </tr>
-    <% }); %>
+    <% if (boards.length > 0) { %>
+        <% boards.forEach((board, idx) => { %>
+            <tr bgcolor="<%= (idx % 2) ? "d6d6f6" : "f6f6f6" %>">
+                <td><a href="/<%= board.url %>"><b>/<%= board.url %></b></a></td>
+                <td><%= board.name %></td>
+                <td><%= board.totalPosts %></td>
+                <td><%= board.totalFiles %></td>
+                <td><%= board.diskSpaceUsage %></td>
+                <td>[<a href="/admin/boards/<%= board.id %>">Edit</a>]</td>
+            </tr>
+        <% }); %>
+    <% } %>
+    </tbody>
 </table>
 
 <p style="text-align: center;">Total: <%= totalRecords %></p>
@@ -52,7 +55,6 @@
 
 <%- include('fragments/admin-bar'); %>
 
-<script src="/js/jquery-1.12.0.min.js"></script>
 <script src="/js/admin-bar.js"></script>
 
 <%- include('fragments/footer'); %>

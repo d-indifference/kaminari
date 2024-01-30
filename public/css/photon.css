@@ -21,6 +21,15 @@ a:hover {
     font-weight: bold;
 }
 
+.logo {
+    clear: both;
+    text-align: center;
+    font-size: 2em;
+    font-weight: bold;
+    color: #ff6600;
+    width: 100%;
+}
+
 .theader, .admin-panel-header {
     background: #dddddd;
     text-align: center;
@@ -37,4 +46,68 @@ a:hover {
     background: transparent;
     color: #002244;
     font-weight: bold;
+}
+
+.table {
+    border-style: none;
+}
+
+.filesize {
+    text-decoration: none;
+    color: #666666;
+    font-size: .8em;
+}
+
+.thumbnailmsg {
+    font-size: .6em;
+    color: #666666;
+}
+
+.filetitle {
+    background: inherit;
+    font-size: 1.2em;
+    color: #002244;
+    font-weight: bold;
+}
+
+.reflink {
+    font-size: .8em;
+    font-weight: bold;
+}
+
+.postertrip {
+    color: #ff3300;
+}
+
+.doubledash {
+    vertical-align: top;
+    clear: both;
+    float: left;
+}
+
+.replytitle {
+    font-size: 1.2em;
+    color: #002244;
+    font-weight: bold;
+}
+
+.commentpostername {
+    color: #004a99;
+    font-weight: 800;
+    display: none;
+}
+
+.reply {
+    background: #dddddd;
+    border: solid 1px #cccccc;
+    padding: 0;
+    margin: 0;
+}
+
+.reply blockquote {
+    margin: 0.5em;
+}
+
+.omittedposts {
+    color: #666666;
 }

@@ -47,15 +47,17 @@ export class PrismaPaginator {
 	 * Get page of records
 	 * @param number Page number
 	 * @param size Page size
+	 * @param orderBy `ORDER BY` expression
 	 */
-	public async pageRequest<T>(number = 0, size = 10): Promise<PrismaPage<T>> {
-		const normalizedPageNumber = Number(this.normalizeInteger(number));
-		const normalizedPageSize = Number(this.normalizeInteger(size));
-
+	public async pageRequest<T>(
+		number = 0,
+		size = 10,
+		orderBy: Record<string, 'asc' | 'desc'> = { createdAt: 'desc' }
+	): Promise<PrismaPage<T>> {
 		const models = (await this.prisma[this.model].findMany({
-			skip: normalizedPageNumber * normalizedPageSize,
-			take: normalizedPageSize,
-			orderBy: { createdAt: 'desc' }
+			skip: number * size,
+			take: size,
+			orderBy
 		})) as T[];
 
 		const totalCount = await this.prisma[this.model].count();
@@ -63,20 +65,20 @@ export class PrismaPaginator {
 		let previousPageNumber: number;
 		let nextPageNumber: number;
 
-		if (normalizedPageNumber > 0) {
-			previousPageNumber = normalizedPageNumber - 1;
+		if (number > 0) {
+			previousPageNumber = number - 1;
 		}
 
-		const mod = totalCount % normalizedPageSize;
+		const mod = totalCount % size;
 
-		let pageCount = Math.floor(totalCount / normalizedPageSize);
+		let pageCount = Math.floor(totalCount / size);
 
 		if (mod > 0) {
 			pageCount += 1;
 		}
 
-		if (normalizedPageNumber + 1 < pageCount) {
-			nextPageNumber = normalizedPageNumber + 1;
+		if (number + 1 < pageCount) {
+			nextPageNumber = number + 1;
 		}
 
 		const page = new PrismaPage<T>();
@@ -86,20 +88,5 @@ export class PrismaPaginator {
 		page.nextPageNumber = nextPageNumber;
 
 		return page;
-	}
-
-	private normalizeInteger(num: number): number {
-		if (isNaN(num)) {
-			return 0;
-		}
-
-		if (num >= 0) {
-			if (Boolean(num % 1)) {
-				return Math.round(num);
-			}
-			return num;
-		}
-
-		return 0;
 	}
 }

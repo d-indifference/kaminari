@@ -1,6 +1,6 @@
 import { Module } from '@nestjs/common';
 import { ConfigModule, ConfigService } from '@nestjs/config';
-import { PrismaService } from '@toolkit/services';
+import { FileSystemService, PrismaService } from '@toolkit/services';
 import {
 	AdminBoardsController,
 	AdminController,
@@ -12,11 +12,14 @@ import {
 	AdminBoardsService,
 	AdminSignInService,
 	AdminTechnicalInfoService,
-	AdminStaffService, AdminSettingsService
+	AdminStaffService,
+	AdminSettingsService,
+	AdminDependenciesService
 } from '@admin/services';
 import { NestjsFormDataModule } from 'nestjs-form-data';
 import { nestjsFormDataConfig } from '@config/nestjs-form-data.config';
 import { SettingsModule } from '@settings/settings.module';
+import { CommentsModule } from '@comments/comments.module';
 
 @Module({
 	imports: [
@@ -26,7 +29,8 @@ import { SettingsModule } from '@settings/settings.module';
 			inject: [ConfigService],
 			useFactory: nestjsFormDataConfig
 		}),
-		SettingsModule
+		SettingsModule,
+		CommentsModule
 	],
 	controllers: [
 		AdminController,
@@ -37,11 +41,13 @@ import { SettingsModule } from '@settings/settings.module';
 	],
 	providers: [
 		PrismaService,
+		FileSystemService,
 		AdminSignInService,
 		AdminTechnicalInfoService,
 		AdminStaffService,
 		AdminBoardsService,
-		AdminSettingsService
+		AdminSettingsService,
+		AdminDependenciesService
 	],
 	exports: []
 })

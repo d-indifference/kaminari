@@ -3,3 +3,4 @@ export * from './admin.technical-info.service';
 export * from './admin.staff.service';
 export * from './admin.boards.service';
 export * from './admin.settings.service';
+export * from './admin.dependencies.service';

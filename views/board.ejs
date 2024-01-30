@@ -1,0 +1,279 @@
+<%- include('fragments/head'); %>
+
+<div class="adminbar">
+    <%- boardLinks %>
+</div>
+<hr>
+
+<h1 class="logo"><%= header %></h1>
+<hr>
+
+<% if (enablePosting) { %>
+    <div class="postarea">
+        <form action="/<%= url %>/kaminari/post" method="post" id="postform" enctype="multipart/form-data">
+            <table>
+                <tbody>
+                <% if (!strictAnonymousPosting) { %>
+                <tr>
+                    <td class="postblock">Name</td>
+                    <td><input type="text" name="name" size="28"><em>(leave it empty)</em></td>
+                </tr>
+                <% } %>
+                <tr>
+                    <td class="postblock">Email</td>
+                    <td><input type="text" name="email" size="28"></td>
+                </tr>
+                <tr>
+                    <td class="postblock">Subject</td>
+                    <td><input type="text" name="subject" size="35"><input type="submit" value="Submit"></td>
+                </tr>
+                <tr>
+                    <td class="postblock">Comment</td>
+                    <td>
+                        <textarea name="comment" cols="60" rows="6"></textarea>
+                    </td>
+                </tr>
+
+                <% if (enableFilesOnThread) { %>
+                    <tr>
+                        <td class="postblock">File</td>
+                        <td><input type="file" name="file" size="35"></td>
+                    </tr>
+                <% } %>
+                <tr>
+                    <td class="postblock">Go to </td>
+                    <td>
+                        <label>
+                            <input type="radio" name="goto" value="board">board</label>
+                        <label><input type="radio" name="goto" value="thread" checked="checked">thread</label>
+                    </td>
+                </tr>
+                <tr>
+                    <td class="postblock">Password</td>
+                    <td><input type="password" name="password" size="8"> (to delete post or file)</td>
+                </tr>
+                <tr>
+                    <td colspan="2">
+                        <div class="rules">
+                            <% if (enableFilesOnThread) { %>
+                                <ul>
+                                    <li>Allowed file types: GIF, JPG, PNG, BMP, SVG, WEBP.</li>
+                                    <li>Max file size: <%= maxFileSize %>.</li>
+                                    <li>Images 200×200 points will be downscaled.</li>
+                                </ul>
+                            <% } %>
+                            <%- additionalRules %>
+                        </div>
+                    </td>
+                </tr>
+                </tbody>
+            </table>
+        </form>
+    </div>
+
+    <script type="text/javascript">setInputs('postform')</script>
+<% } %>
+
+<hr>
+
+<form action="/<%= url %>/kaminari/delete" method="post" id="delform">
+    <% threads.forEach(thread => { %>
+        <div id="thread-<%= thread.numberOnBoard %>">
+            <% if (thread.fileSize && thread.file) { %>
+                <span class="filesize">
+                    File: <a href="/files/<%= url %>/src/<%= thread.file %>"><%= thread.file %></a>
+                    <em>(<%= thread.fileSize %>)</em>
+                </span>
+                <span class="thumbnailmsg">
+                    Click on the file to open original
+                </span><br>
+                <a href="/files/<%= url %>/src/<%= thread.file %>" target="_blank">
+                    <img class="thumb" src="/files/<%= url %>/thumb/<%= thread.fileThumb %>" alt="<%= thread.numberOnBoard %>" width="200">
+                </a>
+            <% } %>
+
+            <% if (thread.fileSize && !thread.file) { %>
+                <div class="nothumb">
+                    File was deleted
+                </div>
+            <% } %>
+
+            <a name="<%= thread.numberOnBoard %>"></a>
+            <label>
+                <input type="checkbox" name="delete" value="<%= thread.numberOnBoard %>">
+                <span class="filetitle"><%= thread.subject %></span>
+                <span class="postername">
+                    <% if (thread.name) { %>
+                        <% if (thread.email) { %>
+                            <a href="mailto:<%= thread.email %>"><%= thread.name %></a>
+                        <% } else { %>
+                            <%= thread.name %>
+                        <% } %>
+                    <% } else { %>
+                        <% if (thread.email) { %>
+                            <a href="mailto:<%= thread.email %>">Anonymous</a>
+                        <% } else { %>
+                            Anonymous
+                        <% } %>
+                    <% } %>
+                </span>
+                <span class="postertrip">
+                    <% if (thread.tripcode) { %>
+                        <% if (thread.email) { %>
+                            <a href="mailto:<%= thread.email %>">!<%= thread.tripcode %></a>
+                        <% } else { %>
+                            !<%= thread.tripcode %>
+                        <% } %>
+                    <% } %>
+                </span>
+                <%= thread.createdAt %>
+            </label>
+            <span class="reflink">
+                <a href="/<%= url %>/res/<%= thread.numberOnBoard %>#<%= thread.numberOnBoard %>">
+                    No. <%= thread.numberOnBoard %>
+                </a>
+            </span>&nbsp;
+            <span class="replytothread">[<a href="/<%= url %>/res/<%= thread.numberOnBoard %>">Reply</a>]</span>
+
+            <blockquote>
+                <%- thread.comment %>
+            </blockquote>
+
+            <span class="omittedposts">
+                <% if (thread.omittedPosts > 0) { %>
+                    There are <%= thread.omittedPosts %> posts <% if (thread.omittedFiles > 0) { %>
+                        and <%= thread.omittedFiles %> files
+                    <% } %> omitted. Click "Reply" to view them.
+                <% } %>
+            </span>
+
+            <% thread.replies.forEach(reply => { %>
+                <table>
+                    <tbody>
+                    <tr>
+                        <td class="doubledash">>></td>
+                        <td class="reply" id="reply-<%= reply.numberOnBoard %>">
+                            <a name="<%= reply.numberOnBoard %>"></a>
+                            <label>
+                                <input type="checkbox" name="delete" value="<%= reply.numberOnBoard %>">
+                                <span class="replytitle"><%= reply.subject %></span>
+                                <span class="commentpostername">
+                                    <% if (reply.name) { %>
+                                        <% if (reply.email) { %>
+                                            <a href="mailto:<%= reply.email %>"><%= reply.name %></a>
+                                        <% } else { %>
+                                            <%= reply.name %>
+                                        <% } %>
+                                    <% } else { %>
+                                        <% if (reply.email) { %>
+                                            <a href="mailto:<%= reply.email %>">Anonymous</a>
+                                        <% } else { %>
+                                            Anonymous
+                                        <% } %>
+                                    <% } %>
+                                </span>
+
+                                <span class="postertrip">
+                                    <% if (reply.tripcode) { %>
+                                        <% if (reply.email) { %>
+                                            <a href="mailto:<%= reply.email %>">!<%= reply.tripcode %></a>
+                                        <% } else { %>
+                                            !<%= reply.tripcode %>
+                                        <% } %>
+                                    <% } %>
+                                </span>
+                                <%= reply.createdAt %>
+                            </label>
+                            <span class="reflink">
+                        <a href="/<%= url %>/res/<%= thread.numberOnBoard %>#<%= reply.numberOnBoard %>">
+                            No. <%= reply.numberOnBoard %>
+                        </a>
+                    </span>&nbsp;<br>
+
+                            <% if (reply.fileSize && reply.file) { %>
+                                <span class="filesize">
+                            File: <a href="/files/<%= url %>/src/<%= reply.file %>"><%= reply.file %></a>
+                            <em>(<%= reply.fileSize %>)</em>
+                        </span>
+                                <span class="thumbnailmsg">Click on the file to open original</span><br>
+                                <a href="/files/<%= url %>/src/<%= reply.file %>" target="_blank">
+                                    <img class="thumb" src="/files/<%= url %>/thumb/<%= reply.fileThumb %>" alt="<%= reply.numberOnBoard %>" width="200">
+                                </a>
+                            <% } %>
+
+                            <% if (reply.fileSize && !reply.file) { %>
+                                <div class="nothumb">
+                                    File was deleted
+                                </div>
+                            <% } %>
+
+                            <blockquote>
+                                <p>
+                                    <%- reply.comment %>
+                                </p>
+                            </blockquote>
+                        </td>
+                    </tr>
+                    </tbody>
+                </table>
+            <% }); %>
+        </div>
+
+        <br clear="left">
+        <hr>
+    <% }); %>
+
+    <table class="userdelete">
+        <tbody>
+        <tr>
+            <td>
+                Delete post [<label><input type="checkbox" name="fileOnly">File only</label>]<br>
+                Password <input type="password" name="password" size="8">
+                <input type="submit" value="Delete">
+            </td>
+        </tr>
+        </tbody>
+    </table>
+</form>
+
+<script type="text/javascript">setDeletePassword('delform')</script>
+
+<table border="1">
+    <tbody>
+    <tr>
+        <td>
+            <% if (currentPageNumber - 1 >= 0) { %>
+                <form action="/<%= url %>/<%= currentPageNumber - 1 %>" method="get"><input type="submit" value="Previous"></form>
+            <% } else { %>
+                Previous
+            <% } %>
+        </td>
+        <td>
+            <% for (let i = 0; i <= maxPageNumber; i++) { %>
+                <% if (i === currentPageNumber) { %>
+                    [<%= i %>]
+                <% } else { %>
+                    [<a href="/<%= url %>/<%= i %>"><%= i %></a>]
+                <% } %>
+            <% } %>
+        </td>
+        <td>
+            <% if (currentPageNumber + 1 <= maxPageNumber) { %>
+                <form action="/<%= url %>/<%= currentPageNumber + 1 %>" method="get"><input type="submit" value="Next"></form>
+            <% } else { %>
+                Next
+            <% } %>
+        </td>
+    </tr>
+    </tbody>
+</table>
+
+<br clear="all">
+
+<div class="adminbar">
+    <%- boardLinks %>
+</div>
+
+<%- include('fragments/footer'); %>
+
+<%- include('fragments/eof'); %>

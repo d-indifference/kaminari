@@ -1,16 +1,15 @@
 import {
-	BadRequestException,
 	Body,
 	Controller,
 	Get,
 	Param,
+	ParseUUIDPipe,
 	Post,
 	Query,
 	Render,
 	Res,
 	Session,
 	UseGuards,
-	UsePipes,
 	ValidationPipe
 } from '@nestjs/common';
 import { SessionGuard } from '@admin/guards';
@@ -20,12 +19,12 @@ import { Response } from 'express';
 import {
 	BoardFormDto,
 	BoardListDto,
-	BoardMutationDto,
-	normalizeDto
+	BoardNormalizedMutationDto
 } from '@admin/dto/boards';
 import { AdminBoardsService } from '@admin/services';
-import { validateSync } from 'class-validator';
 import { SettingsService } from '@settings/services';
+import { PageNumberPipe } from '@toolkit/pipes';
+import { NormalizeBoardMutationDtoPipe } from '@admin/pipes';
 
 /**
  * Admin panel boards management controller
@@ -45,9 +44,9 @@ export class AdminBoardsController {
 	@Render('admin-boards-list')
 	public async index(
 		@Session() session: SessionDto,
-		@Query('page') page?: number
+		@Query('page', new PageNumberPipe()) page?: number
 	): Promise<BoardListDto> {
-		const data = await this.adminBoardsService.findAll(page ?? 0);
+		const data = await this.adminBoardsService.findAll(page);
 
 		return new HeaderedSessionPageBuilder(data)
 			.setSession(session.payload)
@@ -80,7 +79,7 @@ export class AdminBoardsController {
 	@UseGuards(SessionGuard)
 	@Render('admin-boards-form')
 	public async getEditBoardForm(
-		@Param('id') id: string,
+		@Param('id', new ParseUUIDPipe()) id: string,
 		@Session() session: SessionDto
 	): Promise<BoardFormDto> {
 		const data = await this.adminBoardsService.findById(id);
@@ -97,20 +96,15 @@ export class AdminBoardsController {
 	 */
 	@Post('new')
 	@UseGuards(SessionGuard)
-	@UsePipes(new ValidationPipe({ transform: true }))
 	public async createNewBoard(
-		@Body() dto: BoardMutationDto,
+		@Body(
+			new ValidationPipe({ transform: true }),
+			new NormalizeBoardMutationDtoPipe()
+		)
+		dto: BoardNormalizedMutationDto,
 		@Res() res: Response
 	): Promise<void> {
-		const normalizedDto = normalizeDto(dto);
-
-		const errors = validateSync(normalizedDto);
-
-		if (errors.length > 0) {
-			throw new BadRequestException(errors);
-		}
-
-		const board = await this.adminBoardsService.create(normalizedDto);
+		const board = await this.adminBoardsService.create(dto);
 
 		res.redirect(`/admin/boards/${board.id}`);
 	}
@@ -120,21 +114,16 @@ export class AdminBoardsController {
 	 */
 	@Post(':id')
 	@UseGuards(SessionGuard)
-	@UsePipes(new ValidationPipe({ transform: true }))
 	public async updateBoard(
-		@Param('id') id: string,
-		@Body() dto: BoardMutationDto,
+		@Param('id', new ParseUUIDPipe()) id: string,
+		@Body(
+			new ValidationPipe({ transform: true }),
+			new NormalizeBoardMutationDtoPipe()
+		)
+		dto: BoardNormalizedMutationDto,
 		@Res() res: Response
 	): Promise<void> {
-		const normalizedDto = normalizeDto(dto);
-
-		const errors = validateSync(normalizedDto);
-
-		if (errors.length > 0) {
-			throw new BadRequestException(errors);
-		}
-
-		const board = await this.adminBoardsService.update(normalizedDto, id);
+		const board = await this.adminBoardsService.update(dto, id);
 
 		res.redirect(`/admin/boards/${board.id}`);
 	}
@@ -145,7 +134,7 @@ export class AdminBoardsController {
 	@Post(':id/delete')
 	@UseGuards(SessionGuard)
 	public async removeBoard(
-		@Param('id') id: string,
+		@Param('id', new ParseUUIDPipe()) id: string,
 		@Res() res: Response
 	): Promise<void> {
 		await this.adminBoardsService.remove(id);

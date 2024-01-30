@@ -49,7 +49,9 @@ form {
 }
 
 .userdelete {
-    float: right; text-align: center; white-space: nowrap;
+    float: right;
+    text-align: center;
+    white-space: nowrap;
 }
 
 .replypage .replylink {

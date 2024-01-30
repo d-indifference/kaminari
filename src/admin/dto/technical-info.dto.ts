@@ -69,4 +69,14 @@ export class TechnicalInfoDto extends HeaderedSessionPageDto {
 	 * Postgres version
 	 */
 	postgresVersion: string;
+
+	/**
+	 * Application dependencies list
+	 */
+	dependencies: Record<string, string>;
+
+	/**
+	 * Application dev dependencies list
+	 */
+	devDependencies: Record<string, string>;
 }

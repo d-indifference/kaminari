@@ -6,6 +6,8 @@ import { envValidationSchemaConfig } from '@config/env-validation-schema.config'
 import { AdminModule } from '@admin/admin.module';
 import { SettingsModule } from '@settings/settings.module';
 import { MigratorModule } from '@migrator/migrator.module';
+import { CommentsModule } from '@comments/comments.module';
+import { ForumModule } from '@forum/forum.module';
 
 @Module({
 	imports: [
@@ -16,7 +18,9 @@ import { MigratorModule } from '@migrator/migrator.module';
 		}),
 		AdminModule,
 		SettingsModule,
-		MigratorModule
+		MigratorModule,
+		CommentsModule,
+		ForumModule
 	],
 	controllers: [AppController],
 	providers: [PrismaService, InitService]

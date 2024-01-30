@@ -21,11 +21,13 @@ model User {
 }
 
 model Board {
-  id            String         @id @default(dbgenerated("gen_random_uuid()")) @db.Uuid
-  createdAt     DateTime       @default(now())
-  url           String         @unique @db.VarChar(64)
-  name          String         @db.VarChar(256)
-  boardSettings BoardSettings?
+  id             String         @id @default(dbgenerated("gen_random_uuid()")) @db.Uuid
+  createdAt      DateTime       @default(now())
+  url            String         @unique @db.VarChar(64)
+  name           String         @db.VarChar(256)
+  lastPostNumber Int            @default(0) @db.Integer
+  boardSettings  BoardSettings?
+  comments       Comment[]
 }
 
 model BoardSettings {
@@ -48,4 +50,28 @@ model BoardSettings {
   additionalRules        String? @db.Text
   maxFileSize            Int     @db.Integer
   maxCommentLength       Int     @db.Integer
+}
+
+model Comment {
+  id              String    @id @default(dbgenerated("gen_random_uuid()")) @db.Uuid
+  createdAt       DateTime  @default(now())
+  boardId         String    @db.Uuid
+  board           Board     @relation(fields: [boardId], references: [id])
+  parentId        String?   @db.Uuid
+  parent          Comment?  @relation("ThreadReplies", fields: [parentId], references: [id])
+  children        Comment[] @relation("ThreadReplies")
+  posterIp        String    @db.VarChar(256)
+  numberOnBoard   Int       @db.Integer
+  tripcode        String?   @db.VarChar(32)
+  name            String?   @db.VarChar(256)
+  email           String?   @db.VarChar(256)
+  subject         String?   @db.VarChar(256)
+  comment         String?   @db.Text
+  password        String    @db.VarChar(8)
+  file            String?   @db.VarChar(512)
+  fileSize        Int?
+  fileThumb       String?   @db.VarChar(512)
+  lastHit         DateTime?
+  isAdminPost     Boolean   @default(false) @db.Boolean
+  isWipeCandidate Boolean   @default(false) @db.Boolean
 }

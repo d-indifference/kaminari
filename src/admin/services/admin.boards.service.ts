@@ -4,7 +4,7 @@ import {
 	Logger,
 	NotFoundException
 } from '@nestjs/common';
-import { PrismaService } from '@toolkit/services';
+import { FileSystemService, PrismaService } from '@toolkit/services';
 import {
 	BoardDto,
 	BoardFormDto,
@@ -14,6 +14,11 @@ import {
 import { Board } from '@prisma/client';
 import { logWithObject } from '@toolkit/log-with-object';
 import { PrismaPaginator } from '@toolkit/prisma-paginator';
+import { filesize } from 'filesize';
+import * as path from 'path';
+import { ConfigService } from '@nestjs/config';
+import * as process from 'process';
+import { CommentQueries, CommentRemoveCommand } from '@comments/service';
 
 /**
  * Admin panel board service
@@ -22,7 +27,21 @@ import { PrismaPaginator } from '@toolkit/prisma-paginator';
 export class AdminBoardsService {
 	private readonly logger = new Logger(AdminBoardsService.name);
 
-	constructor(private readonly prisma: PrismaService) {}
+	private readonly systemReservedUrls: string[] = [
+		'menu',
+		'main',
+		'admin',
+		'faq',
+		'rules'
+	];
+
+	constructor(
+		private readonly prisma: PrismaService,
+		private readonly fileSystemService: FileSystemService,
+		private readonly configService: ConfigService,
+		private readonly commentQueries: CommentQueries,
+		private readonly commentRemoveCommand: CommentRemoveCommand
+	) {}
 
 	/**
 	 * Find all boards and get list page
@@ -38,9 +57,32 @@ export class AdminBoardsService {
 
 		const page = await paginator.pageRequest<Board>(pageNumber, pageSize);
 
-		listDto.boards = page.objects.map(
-			board => new BoardDto(board, 0, 0, '0 MB')
-		);
+		listDto.boards = [];
+
+		if (page.totalCount > 0) {
+			for (const board of page.objects) {
+				const boardDirPath = path.join(
+					process.cwd(),
+					this.configService.getOrThrow<string>(
+						'KAMINARI_ASSETS_PUBLIC_DIR'
+					),
+					this.configService.getOrThrow<string>('KAMINARI_FILES_DIR'),
+					board.url
+				);
+
+				listDto.boards.push(
+					new BoardDto(
+						board,
+						await this.commentQueries.getCommentsCount(board.url),
+						await this.commentQueries.getFilesCount(board.url),
+						filesize(
+							await this.fileSystemService.dirSize(boardDirPath),
+							{ base: 2, standard: 'jedec' }
+						)
+					)
+				);
+			}
+		}
 
 		listDto.totalRecords = page.totalCount;
 		listDto.previousPageNumber = page.previousPageNumber;
@@ -97,6 +139,7 @@ export class AdminBoardsService {
 	public async create(dto: BoardNormalizedMutationDto): Promise<Board> {
 		this.logger.log(logWithObject('Create board', dto));
 
+		this.checkUrlConflict(dto);
 		await this.checkUniqueUrlOnCreate(dto);
 
 		const newBoard = await this.prisma.board.create({
@@ -152,6 +195,8 @@ export class AdminBoardsService {
 		id: string
 	): Promise<Board> {
 		this.logger.log(logWithObject('Update board', dto));
+
+		this.checkUrlConflict(dto);
 
 		const board = await this.prisma.board.findFirst({
 			where: { id },
@@ -212,6 +257,13 @@ export class AdminBoardsService {
 	public async remove(id: string): Promise<void> {
 		this.logger.log(logWithObject('Remove board', { id }));
 
+		const comments = await this.prisma.comment.findMany({
+			include: { board: true },
+			where: { board: { id } }
+		});
+
+		await this.commentRemoveCommand.removeComments(comments);
+
 		const board = await this.prisma.board.findFirst({
 			where: { id },
 			include: { boardSettings: true }
@@ -226,7 +278,30 @@ export class AdminBoardsService {
 		});
 		await this.prisma.board.delete({ where: { id: board.id } });
 
+		const boardDirPath = path.join(
+			process.cwd(),
+			this.configService.getOrThrow<string>('KAMINARI_ASSETS_PUBLIC_DIR'),
+			this.configService.getOrThrow<string>('KAMINARI_FILES_DIR'),
+			board.url
+		);
+
+		await this.fileSystemService.removePath(boardDirPath);
+
 		this.logger.log(logWithObject('Removed board', { id }));
+	}
+
+	private checkUrlConflict(dto: BoardNormalizedMutationDto): void {
+		if (this.systemReservedUrls.indexOf(dto.url) !== -1) {
+			this.logger.log(
+				logWithObject('Conflicted URL has been written', {
+					url: dto.url
+				})
+			);
+
+			throw new ConflictException(
+				`URL "${dto.url}" is reserved by system. Please write another URL.`
+			);
+		}
 	}
 
 	private async checkUniqueUrlOnCreate(

@@ -75,13 +75,32 @@
     <h3>PostgreSQL</h3>
     <p><a href='https://www.postgresql.org/' target='_blank'>PostgreSQL</a> version: <b><%= postgresVersion %></b></p>
 
+    <h3>Dependencies</h3>
+
+    <ul>
+        <% Object.keys(dependencies).forEach(dependency => { %>
+            <li><a href="https://www.npmjs.com/package/<%= dependency %>" target="_blank">
+                    <%= dependency %>
+                </a>: <b><%= dependencies[dependency] %></b></li>
+        <% }); %>
+    </ul>
+
+    <h3>Dev Dependencies</h3>
+
+    <ul>
+        <% Object.keys(devDependencies).forEach(dependency => { %>
+            <li><a href="https://www.npmjs.com/package/<%= dependency %>" target="_blank">
+                    <%= dependency %>
+                </a>: <b><%= devDependencies[dependency] %></b></li>
+        <% }); %>
+    </ul>
+
 <% } %>
 
 [<a href="/admin">Go back</a>]
 
 <%- include('fragments/admin-bar'); %>
 
-<script src="/js/jquery-1.12.0.min.js"></script>
 <script src="/js/admin-bar.js"></script>
 
 <%- include('fragments/footer'); %>

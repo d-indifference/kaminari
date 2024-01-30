@@ -20,8 +20,10 @@
         "baseUrl": "./src",
         "paths": {
             "@admin/*": ["admin/*"],
+            "@comments/*": ["comments/*"],
             "@config/*": ["config/*"],
             "@exceptions/*": ["exceptions/*"],
+            "@forum/*": ["forum/*"],
             "@migrator/*": ["migrator/*"],
             "@settings/*": ["settings/*"],
             "@toolkit/*": ["toolkit/*"]

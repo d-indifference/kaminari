@@ -14,6 +14,8 @@ export class BadRequestExceptionFilter {
 		const response = ctx.getResponse();
 
 		this.logger.log('[400] Bad request');
+		this.logger.log(exception.message);
+		console.log(exception.stack);
 
 		response.render('error', {
 			title: '400 Bad request',
